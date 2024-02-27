@@ -8,7 +8,7 @@ This was a project I did in a weekend. It uses the browsers drag and drop api to
 
 - Click the deck to flip a card
 - Click and drag a card to place one card on another
-- Double click a card to move it to the completed column for that suit in the top right corner.
+- Double click a card to move it to its completed column in the top right corner.
 
 ## ToDo
 
