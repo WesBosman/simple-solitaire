@@ -1,0 +1,174 @@
+body {
+    font-size: 20px;
+    background-color: #c6decf;
+    margin: 0px;
+}
+#game {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+#top-row {
+    display: flex;
+    height: 25%;
+    gap: 1em;
+    justify-content: space-around;
+    margin-left: 1.5em;
+    margin-right: 1.5em;
+}
+#deck {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#deck:hover {
+    cursor: pointer;
+}
+#flipped-deck {
+    position: relative;
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#top-row-spacer {
+    flex: 2;
+    width: 100%;
+    height: 100%;
+}
+#completed-stacks {
+    display: flex;
+    flex: 4;
+    width: 100%;
+    height: 100%;
+    gap: 1em;
+}
+#bottom-row {
+    display: flex;
+    justify-content: space-around;
+    gap: 1em;
+    height: 75%;
+}
+.completed-column {
+    display: flex;
+    align-items: center;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+.border-red {
+    border: 1px solid red;
+    border-radius: 4px;
+}
+.border-black {
+    border: 1px solid black;
+    border-radius: 4px;
+}
+.column {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+}
+.completed-column .card {
+    top: 15px;
+}
+.column .card {
+    position: absolute;
+}
+.card {
+    padding: 2px 5px 0px 5px;
+    display: flex;
+    width: 3em;
+    height: 4em;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 4px;
+}
+.deck-card {
+    padding: 2px 5px 0px 5px;
+    display: flex;
+    width: 3em;
+    height: 4em;
+    background-color: cornflowerblue;
+    border: 1px solid black;
+    border-radius: 4px;
+}
+.card:not(.flipped) {
+    color: cornflowerblue;
+    background-color: cornflowerblue;
+}
+.bottom-column .card:nth-child(1n) {
+    top: 0px;
+}
+.bottom-column .card:nth-child(2n) {
+    top: 20px;
+}
+.bottom-column .card:nth-child(3n) {
+    top: 40px;
+}
+.bottom-column .card:nth-child(4n) {
+    top: 60px;
+}
+.bottom-column .card:nth-child(5n) {
+    top: 80px;
+}
+.bottom-column .card:nth-child(6n) {
+    top: 100px;
+}
+.bottom-column .card:nth-child(7n) {
+    top: 120px;
+}
+.bottom-column .card:nth-child(8n) {
+    top: 140px;
+}
+.bottom-column .card:nth-child(9n) {
+    top: 160px;
+}
+.bottom-column .card:nth-child(10n) {
+    top: 180px;
+}
+.bottom-column .card:nth-child(11n) {
+    top: 200px;
+}
+.bottom-column .card:nth-child(12n) {
+    top: 220px;
+}
+.bottom-column .card:nth-child(13n) {
+    top: 240px;
+}
+.bottom-column .card:nth-child(14n) {
+    top: 260px;
+}
+.bottom-column .card:nth-child(15n) {
+    top: 280px;
+}
+.bottom-column .card:nth-child(16n) {
+    top: 300px;
+}
+.bottom-column .card:nth-child(17n) {
+    top: 320px;
+}
+.bottom-column .card:nth-child(18n) {
+    top: 340px;
+}
+.bottom-column .card:nth-child(19n) {
+    top: 360px;
+}
+.bottom-column .card:nth-child(20n) {
+    top: 260px;
+}
+.red {
+    color: red;
+}
+.black {
+    color: black;
+}
