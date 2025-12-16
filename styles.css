@@ -1,6 +1,15 @@
+:root {
+   --text-size: 20px;
+   --card-width: 5em;
+   --card-height: 7em;
+   --card-empty-color: #306a4b;
+   --suit-red-color: red;
+   --suit-black-color: black;
+   --board-color: #1E5C3A;
+}
 body {
-    font-size: 20px;
-    background-color: #c6decf;
+    font-size: var(--text-size);
+    background-color: var(--board-color);
     margin: 0px;
 }
 #game {
@@ -12,11 +21,11 @@ body {
 }
 #top-row {
     display: flex;
-    height: 25%;
+    height: 15%;
     gap: 1em;
     justify-content: space-around;
-    margin-left: 1.5em;
-    margin-right: 1.5em;
+    margin-left: 1em;
+    margin-right: 1em;
 }
 #deck {
     flex: 1;
@@ -39,8 +48,7 @@ body {
     align-items: center;
 }
 #top-row-spacer {
-    flex: 2;
-    width: 100%;
+    width: var(--card-width);
     height: 100%;
 }
 #completed-stacks {
@@ -49,27 +57,30 @@ body {
     width: 100%;
     height: 100%;
     gap: 1em;
+    align-items: center;
 }
 #bottom-row {
     display: flex;
     justify-content: space-around;
     gap: 1em;
     height: 75%;
+    margin-left: 1em;
+    margin-right: 1em;
 }
 .completed-column {
     display: flex;
     align-items: center;
-    margin-top: 1em;
-    margin-bottom: 1em;
-    margin-left: 1em;
-    margin-right: 1em;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: var(--card-width);
+    height: var(--card-height);
 }
 .border-red {
-    border: 1px solid red;
+    border: 1px solid var(--suit-red-color);
     border-radius: 4px;
 }
 .border-black {
-    border: 1px solid black;
+    border: 1px solid var(--suit-black-color);
     border-radius: 4px;
 }
 .column {
@@ -87,24 +98,32 @@ body {
 .card {
     padding: 2px 5px 0px 5px;
     display: flex;
-    width: 3em;
-    height: 4em;
+    width: var(--card-width);
+    height: var(--card-height);
     background-color: white;
     border: 1px solid black;
     border-radius: 4px;
+    user-select: none;
+    touch-action: manipulation;
 }
 .deck-card {
     padding: 2px 5px 0px 5px;
     display: flex;
-    width: 3em;
-    height: 4em;
+    width: var(--card-width);
+    height: var(--card-height);
     background-color: cornflowerblue;
     border: 1px solid black;
     border-radius: 4px;
+    touch-action: manipulation;
 }
 .card:not(.flipped) {
     color: cornflowerblue;
     background-color: cornflowerblue;
+}
+.empty {
+    background-color: var(--card-empty-color);
+    width: var(--card-width);
+    height: var(--card-height);
 }
 .bottom-column .card:nth-child(1n) {
     top: 0px;
@@ -167,8 +186,34 @@ body {
     top: 260px;
 }
 .red {
-    color: red;
+    color: var(--suit-red-color);
 }
 .black {
-    color: black;
+    color: var(--suit-black-color);
 }
+.card:not(.flipped) {
+    background: 
+    repeating-linear-gradient(45deg, #dc2626 0px, #dc2626 10px, #991b1b 10px, #991b1b 20px),
+    repeating-linear-gradient(-45deg, #dc2626 0px, #dc2626 10px, #991b1b 10px, #991b1b 20px);
+    color: transparent;
+    cursor: default;
+}
+.deck-card:not(.flipped) {
+    background: 
+    repeating-linear-gradient(45deg, #dc2626 0px, #dc2626 10px, #991b1b 10px, #991b1b 20px),
+    repeating-linear-gradient(-45deg, #dc2626 0px, #dc2626 10px, #991b1b 10px, #991b1b 20px);
+    color: transparent;
+    cursor: default;
+}
+
+/* Design 4: Green Geometric */
+/* .card:not(.flipped) {
+    background: 
+    linear-gradient(45deg, transparent 30%, #059669 30%, #059669 70%, transparent 70%),
+    linear-gradient(-45deg, transparent 30%, #047857 30%, #047857 70%, transparent 70%),
+    #065f46;
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 0;
+    color: transparent;
+    cursor: default;
+} */

@@ -273,10 +273,10 @@ const createCards = (cards) => {
     const onFlipCard =
       card.isFlipped === false ? 'onclick=onFlipCard(event)' : '';
     const onDoubleClick = 'ondblclick="doubleClickHandler(event)"';
-    const isDraggable = card.isFlipped
-      ? 'draggable="true" ondragstart="dragstartHandler(event)" ondragend="dragendHandler(event)"'
-      : '';
-    html += `<div id=${card.id} class="card ${card.suitColor} ${isFlipped}" ${isDraggable} ${onDoubleClick} ${onFlipCard}>
+    // const isDraggable = card.isFlipped
+    //   ? 'draggable="true" ondragstart="dragstartHandler(event)" ondragend="dragendHandler(event)"'
+    //   : '';
+    html += `<div id=${card.id} class="card ${card.suitColor} ${isFlipped}" ${onDoubleClick} ${onFlipCard}>
             ${card.displayString}
         </div>`;
   });
@@ -301,7 +301,7 @@ deckSection.addEventListener('click', (e) => {
   if (card) {
     flippedDeckSection.innerHTML = createCards([card]);
   } else {
-    flippedDeckSection.innerText = 'Click deck to go through remaining cards';
+    flippedDeckSection.innerHTML = '<div class="empty"></div>';
     d = flippedDeck.slice();
     flippedDeck = [];
   }
@@ -318,7 +318,18 @@ const onFlipCard = (event) => {
   if (!card) {
     return;
   }
+  
+  // Find other cards that appear after card a
+  const columnCards = Array.prototype.slice.call(
+    document.getElementById(id).parentNode.childNodes
+  );
+  const colIndex = columnCards.findIndex((x) => x.id === id);
 
+  // Check the card you're trying to flip is the last in the column
+  if (colIndex !== columnCards.length - 1) {
+    return;
+  }
+  
   card.isFlipped = true;
   const cardElement = document.getElementById(id);
   cardElement.outerHTML = createCards([card]);
@@ -350,21 +361,21 @@ const isValidMove = (cardA, cardB) => {
  * and all draggable cards beneath it to a column
  * as long as the move is valid
  */
-const dragstartHandler = (event) => {
-  const parentId = event.target.parentElement.id;
-  movedCardFromDeck = parentId === 'flipped-deck';
-  event.dataTransfer.setData('card-id', event.target.id);
-  event.effectAllowed = 'move';
-};
+// const dragstartHandler = (event) => {
+//   const parentId = event.target.parentElement.id;
+//   movedCardFromDeck = parentId === 'flipped-deck';
+//   event.dataTransfer.setData('card-id', event.target.id);
+//   event.effectAllowed = 'move';
+// };
 
 /**
  * Have to call prevent default when dragging over in order to drop
  * @param {*} event
  */
-const dragoverHandler = (event) => {
-  event.preventDefault();
-  event.dropEffect = 'move';
-};
+// const dragoverHandler = (event) => {
+//   event.preventDefault();
+//   event.dropEffect = 'move';
+// };
 
 const dropHandler = (event) => {
   let target = event.target.parentElement;
