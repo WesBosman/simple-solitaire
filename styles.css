@@ -21,7 +21,7 @@ body {
 }
 #top-row {
     display: flex;
-    height: 15%;
+    height: 25%;
     gap: 1em;
     justify-content: space-around;
     margin-left: 1em;
@@ -89,9 +89,6 @@ body {
     position: relative;
     width: 100%;
 }
-.completed-column .card {
-    top: 15px;
-}
 .column .card {
     position: absolute;
 }
@@ -125,64 +122,64 @@ body {
     width: var(--card-width);
     height: var(--card-height);
 }
-.bottom-column .card:nth-child(1n) {
+.bottom-column .card:nth-child(1) {
     top: 0px;
 }
-.bottom-column .card:nth-child(2n) {
+.bottom-column .card:nth-child(2) {
     top: 20px;
 }
-.bottom-column .card:nth-child(3n) {
+.bottom-column .card:nth-child(3) {
     top: 40px;
 }
-.bottom-column .card:nth-child(4n) {
+.bottom-column .card:nth-child(4) {
     top: 60px;
 }
-.bottom-column .card:nth-child(5n) {
+.bottom-column .card:nth-child(5) {
     top: 80px;
 }
-.bottom-column .card:nth-child(6n) {
+.bottom-column .card:nth-child(6) {
     top: 100px;
 }
-.bottom-column .card:nth-child(7n) {
+.bottom-column .card:nth-child(7) {
     top: 120px;
 }
-.bottom-column .card:nth-child(8n) {
+.bottom-column .card:nth-child(8) {
     top: 140px;
 }
-.bottom-column .card:nth-child(9n) {
+.bottom-column .card:nth-child(9) {
     top: 160px;
 }
-.bottom-column .card:nth-child(10n) {
+.bottom-column .card:nth-child(10) {
     top: 180px;
 }
-.bottom-column .card:nth-child(11n) {
+.bottom-column .card:nth-child(11) {
     top: 200px;
 }
-.bottom-column .card:nth-child(12n) {
+.bottom-column .card:nth-child(12) {
     top: 220px;
 }
-.bottom-column .card:nth-child(13n) {
+.bottom-column .card:nth-child(13) {
     top: 240px;
 }
-.bottom-column .card:nth-child(14n) {
+.bottom-column .card:nth-child(14) {
     top: 260px;
 }
-.bottom-column .card:nth-child(15n) {
+.bottom-column .card:nth-child(15) {
     top: 280px;
 }
-.bottom-column .card:nth-child(16n) {
+.bottom-column .card:nth-child(16) {
     top: 300px;
 }
-.bottom-column .card:nth-child(17n) {
+.bottom-column .card:nth-child(17) {
     top: 320px;
 }
-.bottom-column .card:nth-child(18n) {
+.bottom-column .card:nth-child(18) {
     top: 340px;
 }
-.bottom-column .card:nth-child(19n) {
+.bottom-column .card:nth-child(19) {
     top: 360px;
 }
-.bottom-column .card:nth-child(20n) {
+.bottom-column .card:nth-child(20) {
     top: 260px;
 }
 .red {

@@ -276,7 +276,7 @@ const createCards = (cards) => {
     const isDraggable = card.isFlipped
       ? 'draggable="true" ondragstart="dragstartHandler(event)" ondragend="dragendHandler(event)"'
       : '';
-    html += `<div id=${card.id} class="card ${card.suitColor} ${isDraggable} ${isFlipped}" ${onDoubleClick} ${onFlipCard}>
+    html += `<div id=${card.id} ${isDraggable} class="card ${card.suitColor} ${isFlipped}" ${onDoubleClick} ${onFlipCard}>
             ${card.displayString}
         </div>`;
   });
