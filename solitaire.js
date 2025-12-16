@@ -273,10 +273,10 @@ const createCards = (cards) => {
     const onFlipCard =
       card.isFlipped === false ? 'onclick=onFlipCard(event)' : '';
     const onDoubleClick = 'ondblclick="doubleClickHandler(event)"';
-    // const isDraggable = card.isFlipped
-    //   ? 'draggable="true" ondragstart="dragstartHandler(event)" ondragend="dragendHandler(event)"'
-    //   : '';
-    html += `<div id=${card.id} class="card ${card.suitColor} ${isFlipped}" ${onDoubleClick} ${onFlipCard}>
+    const isDraggable = card.isFlipped
+      ? 'draggable="true" ondragstart="dragstartHandler(event)" ondragend="dragendHandler(event)"'
+      : '';
+    html += `<div id=${card.id} class="card ${card.suitColor} ${isDraggable} ${isFlipped}" ${onDoubleClick} ${onFlipCard}>
             ${card.displayString}
         </div>`;
   });
@@ -361,21 +361,21 @@ const isValidMove = (cardA, cardB) => {
  * and all draggable cards beneath it to a column
  * as long as the move is valid
  */
-// const dragstartHandler = (event) => {
-//   const parentId = event.target.parentElement.id;
-//   movedCardFromDeck = parentId === 'flipped-deck';
-//   event.dataTransfer.setData('card-id', event.target.id);
-//   event.effectAllowed = 'move';
-// };
+const dragstartHandler = (event) => {
+  const parentId = event.target.parentElement.id;
+  movedCardFromDeck = parentId === 'flipped-deck';
+  event.dataTransfer.setData('card-id', event.target.id);
+  event.effectAllowed = 'move';
+};
 
 /**
  * Have to call prevent default when dragging over in order to drop
  * @param {*} event
  */
-// const dragoverHandler = (event) => {
-//   event.preventDefault();
-//   event.dropEffect = 'move';
-// };
+const dragoverHandler = (event) => {
+  event.preventDefault();
+  event.dropEffect = 'move';
+};
 
 const dropHandler = (event) => {
   let target = event.target.parentElement;
