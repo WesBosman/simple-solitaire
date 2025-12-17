@@ -496,8 +496,6 @@ const doubleClickHandler = (event) => {
       }
     }
 
-    console.log("Completed cards: ", completedCards);
-
     // Get the card and move it to the completed cards section
     if (cardSuitName === suitName.heart) {
       moveCard(clickedCard.id, 'completed-hearts')
