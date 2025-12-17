@@ -482,6 +482,17 @@ const doubleClickHandler = (event) => {
   const currentCompletedCardsForSuit = completedCards[cardSuitName];
   const numberOfCompletedCardsForSuit = currentCompletedCardsForSuit.length;
 
+  // Get the card and move it to the completed cards section
+  if (cardSuitName === suitName.heart) {
+    moveCard(clickedCard.id, 'completed-hearts')
+  } else if (cardSuitName === suitName.club) {
+    moveCard(clickedCard.id, 'completed-clubs')
+  } else if (cardSuitName === suitName.diamond) {
+    moveCard(clickedCard.id, 'completed-diamonds')
+  } else if (cardSuitName === suitName.spade) {
+    moveCard(clickedCard.id, 'completed-spades')
+  }
+
   if (numberOfCompletedCardsForSuit === clickedCard.cardNumber) {
     const newCompletedCards = [...currentCompletedCardsForSuit, clickedCard];
     completedCards[cardSuitName] = newCompletedCards;
@@ -494,17 +505,6 @@ const doubleClickHandler = (event) => {
       if (flippedDeck.length >= 1) {
         flippedDeckSection.innerHTML = createCards([flippedDeck[0]]);
       }
-    }
-
-    // Get the card and move it to the completed cards section
-    if (cardSuitName === suitName.heart) {
-      moveCard(clickedCard.id, 'completed-hearts')
-    } else if (cardSuitName === suitName.club) {
-      moveCard(clickedCard.id, 'completed-clubs')
-    } else if (cardSuitName === suitName.diamond) {
-      moveCard(clickedCard.id, 'completed-diamonds')
-    } else if (cardSuitName === suitName.spade) {
-      moveCard(clickedCard.id, 'completed-spades')
     }
   }
 };
