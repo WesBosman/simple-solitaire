@@ -390,6 +390,99 @@ const isValidMove = (cardA, cardB) => {
   return false;
 };
 
+// Check if the game is in a winnable state (all cards are flipped)
+function checkAutoComplete() {
+  // Check if deck is empty
+  if (d.length > 0 || flippedDeck.length > 0) {
+    return false;
+  }
+  
+  // Check if all cards in columns are flipped
+  const allColumns = [columnOne, columnTwo, columnThree, columnFour, 
+                      columnFive, columnSix, columnSeven];
+  
+  for (const column of allColumns) {
+    for (const card of column) {
+      if (!card.isFlipped) {
+        return false;
+      }
+    }
+  }
+  
+  return true;
+}
+
+// Find the next card that can be moved to a foundation
+function findNextMovableCard() {
+  const allColumns = [
+    { cards: columnOne, element: columnOneSection },
+    { cards: columnTwo, element: columnTwoSection },
+    { cards: columnThree, element: columnThreeSection },
+    { cards: columnFour, element: columnFourSection },
+    { cards: columnFive, element: columnFiveSection },
+    { cards: columnSix, element: columnSixSection },
+    { cards: columnSeven, element: columnSevenSection }
+  ];
+  
+  for (const column of allColumns) {
+    if (column.cards.length === 0) continue;
+    
+    // Get the last (top) card in the column
+    const lastCard = column.cards[column.cards.length - 1];
+    
+    // Check if it can go to its foundation
+    const suitName = lastCard.suitName;
+    const currentCompleted = completedCards[suitName];
+    
+    if (currentCompleted.length === lastCard.cardNumber) {
+      return { card: lastCard, column: column };
+    }
+  }
+  
+  return null;
+}
+
+function autoCompleteGame() {
+  console.log("Starting auto-complete!");
+  
+  while (true) {
+    const move = findNextMovableCard();
+    
+    if (!move) {
+      console.log("Auto-complete finished!");
+      break;
+    }
+    
+    const { card, column } = move;
+    const suitName = card.suitName;
+    
+    // TODO: Off by one issue in here
+    // Get the foundation element
+    let foundationElement;
+    if (suitName === 'heart') {
+      foundationElement = completedHeartsSection.id;
+    } else if (suitName === 'spade') {
+      foundationElement = completedSpadesSection.id;
+    } else if (suitName === 'club') {
+      foundationElement = completedClubsSection.id;
+    } else if (suitName === 'diamond') {
+      foundationElement = completedDiamondsSection.id;
+    }
+    
+    // Update the completed cards array
+    completedCards[suitName] = [...completedCards[suitName], card];
+    
+    // Remove from column array
+    column.cards.pop();
+    
+    // Animate the card
+    moveCard(card.id, foundationElement);
+    
+    // Small delay between cards for visual effect
+    // await new Promise(resolve => setTimeout(resolve, 100));
+  }
+}
+
 /**
  * Should be able to drag and drop a draggable card
  * and all draggable cards beneath it to a column
@@ -513,5 +606,9 @@ const doubleClickHandler = (event) => {
     if (flippedDeck.length >= 1) {
       flippedDeckSection.innerHTML = createCards([flippedDeck[0]]);
     }
+  }
+
+  if (checkAutoComplete()) {
+    autoCompleteGame();
   }
 };
