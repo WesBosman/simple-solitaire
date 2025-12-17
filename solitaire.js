@@ -308,6 +308,36 @@ deckSection.addEventListener('click', (e) => {
 });
 
 /**
+ * Animate a card from one position to another
+ */
+const moveCard = (cardId, targetId) => {
+  const card = document.getElementById(cardId);
+  const target = document.getElementById(targetId);
+
+  const startRect = card.getBoundingClientRect();
+
+  target.appendChild(card);
+
+  const  endRect = card.getBoundingClientRect();
+
+  const deltaX = startRect.left - endRect.left;
+  const deltaY = startRect.top - endRect.top;
+
+  // Animate
+  card.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+  card.offsetHeight; // Force reflow
+  
+  card.style.transition = 'transform 0.3s ease-out';
+  card.style.transform = 'translate(0, 0)';
+  
+  // Cleanup
+  setTimeout(() => {
+    card.style.transition = '';
+    card.style.transform = '';
+  }, 300);
+}
+
+/**
  * If the card is the last card in the column
  * and it is unflipped it should be able to be flipped
  */
@@ -466,15 +496,17 @@ const doubleClickHandler = (event) => {
       }
     }
 
+    console.log("Completed cards: ", completedCards);
+
     // Get the card and move it to the completed cards section
     if (cardSuitName === suitName.heart) {
-      completedHeartsSection.appendChild(event.target);
+      moveCard(clickedCard.id, 'completed-hearts')
     } else if (cardSuitName === suitName.club) {
-      completedClubsSection.appendChild(event.target);
+      moveCard(clickedCard.id, 'completed-clubs')
     } else if (cardSuitName === suitName.diamond) {
-      completedDiamondsSection.appendChild(event.target);
+      moveCard(clickedCard.id, 'completed-diamonds')
     } else if (cardSuitName === suitName.spade) {
-      completedSpadesSection.appendChild(event.target);
+      moveCard(clickedCard.id, 'completed-spades')
     }
   }
 };

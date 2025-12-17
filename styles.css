@@ -21,7 +21,7 @@ body {
 }
 #top-row {
     display: flex;
-    height: 25%;
+    height: 200px;
     gap: 1em;
     justify-content: space-around;
     margin-left: 1em;
