@@ -15,22 +15,23 @@ body {
 #game {
     width: 100vw;
     height: 100vh;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    /* grid-template-rows: auto 1fr; */
+    grid-template-rows: calc(var(--card-height) + 10px) 1fr;
     gap: 1em;
+    padding: 1em;
+    box-sizing: border-box;
 }
 #top-row {
-    display: flex;
-    height: 200px;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
     gap: 1em;
-    justify-content: space-around;
-    margin-left: 1em;
-    margin-right: 1em;
 }
 #deck {
-    flex: 1;
+    grid-column: 1;
     width: 100%;
-    height: 100%;
+    align-self: stretch;
+    height: var(--card-height);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -39,39 +40,39 @@ body {
     cursor: pointer;
 }
 #flipped-deck {
+    grid-column: 2;
     position: relative;
-    flex: 1;
     width: 100%;
-    height: 100%;
+    align-self: stretch;
+    height: var(--card-height);
     display: flex;
     justify-content: center;
     align-items: center;
 }
 #top-row-spacer {
-    width: var(--card-width);
-    height: 100%;
+    grid-column: 3;
 }
 #completed-stacks {
-    display: flex;
-    flex: 4;
-    width: 100%;
-    height: 100%;
+    grid-column: 4 / 8;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     gap: 1em;
-    align-items: center;
+    height: 100%;
+    height: var(--card-height);
+    align-self: stretch;
 }
 #bottom-row {
-    display: flex;
-    justify-content: space-around;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
     gap: 1em;
-    height: 75%;
-    margin-left: 1em;
-    margin-right: 1em;
+    align-items: start;
 }
 .completed-column {
     display: flex;
     align-items: center;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    justify-content: center;
+    justify-self: center;
+    align-self: stretch;
     width: var(--card-width);
     height: var(--card-height);
 }
@@ -121,6 +122,10 @@ body {
     background-color: var(--card-empty-color);
     width: var(--card-width);
     height: var(--card-height);
+}
+.bottom-column {
+    min-height: 300px;
+    height: 100%;
 }
 .bottom-column .card:nth-child(1) {
     top: 0px;
@@ -180,7 +185,7 @@ body {
     top: 360px;
 }
 .bottom-column .card:nth-child(20) {
-    top: 260px;
+    top: 380px;
 }
 .red {
     color: var(--suit-red-color);
@@ -203,14 +208,20 @@ body {
     cursor: default;
 }
 
-/* Design 4: Green Geometric */
-/* .card:not(.flipped) {
-    background: 
-    linear-gradient(45deg, transparent 30%, #059669 30%, #059669 70%, transparent 70%),
-    linear-gradient(-45deg, transparent 30%, #047857 30%, #047857 70%, transparent 70%),
-    #065f46;
-    background-size: 20px 20px;
-    background-position: 0 0, 10px 0;
-    color: transparent;
-    cursor: default;
-} */
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    :root {
+        --text-size: 16px;
+        --card-width: 4em;
+        --card-height: 5.5em;
+    }
+    
+    #game {
+        gap: 0.5em;
+        padding: 0.5em;
+    }
+    
+    #top-row, #bottom-row, #completed-stacks {
+        gap: 0.5em;
+    }
+}
