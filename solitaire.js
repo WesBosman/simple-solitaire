@@ -314,6 +314,9 @@ const moveCard = (cardId, targetId) => {
   const card = document.getElementById(cardId);
   const target = document.getElementById(targetId);
 
+  const originalZIndex = card.style.zIndex;
+  card.style.zIndex = "10";
+
   const startRect = card.getBoundingClientRect();
 
   target.appendChild(card);
@@ -334,6 +337,7 @@ const moveCard = (cardId, targetId) => {
   setTimeout(() => {
     card.style.transition = '';
     card.style.transform = '';
+    card.style.zIndex = originalZIndex;
   }, 300);
 }
 
@@ -482,6 +486,11 @@ const doubleClickHandler = (event) => {
   const currentCompletedCardsForSuit = completedCards[cardSuitName];
   const numberOfCompletedCardsForSuit = currentCompletedCardsForSuit.length;
 
+  // Check we can move that card to the completed section
+  if (numberOfCompletedCardsForSuit !== clickedCard.cardNumber) {
+    return;
+  }
+
   // Get the card and move it to the completed cards section
   if (cardSuitName === suitName.heart) {
     moveCard(clickedCard.id, 'completed-hearts')
@@ -493,18 +502,16 @@ const doubleClickHandler = (event) => {
     moveCard(clickedCard.id, 'completed-spades')
   }
 
-  if (numberOfCompletedCardsForSuit === clickedCard.cardNumber) {
-    const newCompletedCards = [...currentCompletedCardsForSuit, clickedCard];
-    completedCards[cardSuitName] = newCompletedCards;
+  const newCompletedCards = [...currentCompletedCardsForSuit, clickedCard];
+  completedCards[cardSuitName] = newCompletedCards;
 
-    // If the card was moved from the deck to complete cards remove last
-    // element from flipped cards
-    if (parentId === 'flipped-deck') {
-      flippedDeck = flippedDeck.filter((x) => x.id !== event.target.id);
+  // If the card was moved from the deck to complete cards remove last
+  // element from flipped cards
+  if (parentId === 'flipped-deck') {
+    flippedDeck = flippedDeck.filter((x) => x.id !== event.target.id);
 
-      if (flippedDeck.length >= 1) {
-        flippedDeckSection.innerHTML = createCards([flippedDeck[0]]);
-      }
+    if (flippedDeck.length >= 1) {
+      flippedDeckSection.innerHTML = createCards([flippedDeck[0]]);
     }
   }
 };
