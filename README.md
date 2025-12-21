@@ -12,9 +12,7 @@ This was a project I did in a weekend. It uses the browsers drag and drop api to
 
 ## ToDo
 
-1. Make sure only the last card in a column can be flipped
-2. Add themes
-3. Add images for the backs of cards
-4. Add a game win state 🎉
-5. Add a shortcut to move all cards to completed columns when able
-6. Make the bouncing card animation from windows 95 days
+1. Add themes
+1. Add images for the backs of cards
+1. Add a game win state 🎉
+1. Make the bouncing card animation from windows 95 days
