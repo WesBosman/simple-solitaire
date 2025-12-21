@@ -77,11 +77,11 @@ body {
     height: var(--card-height);
 }
 .border-red {
-    border: 1px solid var(--suit-red-color);
+    border: 2px dashed var(--suit-red-color);
     border-radius: 4px;
 }
 .border-black {
-    border: 1px solid var(--suit-black-color);
+    border: 2px dashed var(--suit-black-color);
     border-radius: 4px;
 }
 .column {
