@@ -16,3 +16,5 @@ This was a project I did in a weekend. It uses the browsers drag and drop api to
 1. Add images for the backs of cards
 1. Add a game win state 🎉
 1. Make the bouncing card animation from windows 95 days
+1. Add sounds
+1. Add settings
