@@ -119,13 +119,22 @@ body {
     background-color: cornflowerblue;
 }
 .empty {
-    background-color: var(--card-empty-color);
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
     width: var(--card-width);
     height: var(--card-height);
 }
 .bottom-column {
     min-height: 300px;
     height: 100%;
+}
+.bottom-column:empty::before {
+    content: "";
+    display: block;
+    width: var(--card-width);
+    height: var(--card-height);
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
 }
 .bottom-column .card:nth-child(1) {
     top: 0px;
