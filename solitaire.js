@@ -397,59 +397,69 @@ function checkAutoComplete() {
     return false;
   }
   
-  // Check if all cards in columns are flipped
-  const allColumns = [columnOne, columnTwo, columnThree, columnFour, 
-                      columnFive, columnSix, columnSeven];
+  // Check if all cards are flipped over
+  const allCardsFlipped = allCards.every(x => x.isFlipped);
   
-  for (const column of allColumns) {
-    for (const card of column) {
-      if (!card.isFlipped) {
-        return false;
-      }
-    }
-  }
-  
-  return true;
+  return allCardsFlipped;
+}
+
+// Get all cards in the column
+function getAllCardsInColumn(columnId) {
+  const cards = Array.prototype.slice.call(
+    document.getElementById(columnId).childNodes
+  );
+
+  return cards.map(x => {
+    const c = allCards.find(y => y.id === x.id);
+
+    return c;
+  })
 }
 
 // Find the next card that can be moved to a foundation
 function findNextMovableCard() {
   const allColumns = [
-    { cards: columnOne, element: columnOneSection },
-    { cards: columnTwo, element: columnTwoSection },
-    { cards: columnThree, element: columnThreeSection },
-    { cards: columnFour, element: columnFourSection },
-    { cards: columnFive, element: columnFiveSection },
-    { cards: columnSix, element: columnSixSection },
-    { cards: columnSeven, element: columnSevenSection }
+    { cards: getAllCardsInColumn(columnOneSection.id), element: columnOneSection },
+    { cards: getAllCardsInColumn(columnTwoSection.id), element: columnTwoSection },
+    { cards: getAllCardsInColumn(columnThreeSection.id), element: columnThreeSection },
+    { cards: getAllCardsInColumn(columnFourSection.id), element: columnFourSection },
+    { cards: getAllCardsInColumn(columnFiveSection.id), element: columnFiveSection },
+    { cards: getAllCardsInColumn(columnSixSection.id), element: columnSixSection },
+    { cards: getAllCardsInColumn(columnSevenSection.id), element: columnSevenSection }
   ];
   
+  // Collect ALL cards from all columns
+  let allAvailableCards = [];
+  
   for (const column of allColumns) {
-    if (column.cards.length === 0) continue;
-    
-    // Get the last (top) card in the column
-    const lastCard = column.cards[column.cards.length - 1];
-    
-    // Check if it can go to its foundation
-    const suitName = lastCard.suitName;
+    for (const card of column.cards) {
+      allAvailableCards.push({ card, column });
+    }
+  }
+  
+  // Sort by card number (lowest first - Ace=0, Two=1, etc.)
+  allAvailableCards.sort((a, b) => a.card.cardNumber - b.card.cardNumber);
+  
+  // Find the first card that can legally move to its foundation
+  for (const item of allAvailableCards) {
+    const { card, column } = item;
+    const suitName = card.suitName;
     const currentCompleted = completedCards[suitName];
     
-    if (currentCompleted.length === lastCard.cardNumber) {
-      return { card: lastCard, column: column };
+    // Check if this card is the next one needed for its suit
+    if (currentCompleted.length === card.cardNumber) {
+      return { card, column };
     }
   }
   
   return null;
 }
 
-function autoCompleteGame() {
-  console.log("Starting auto-complete!");
-  
+async function autoCompleteGame() {  
   while (true) {
     const move = findNextMovableCard();
     
     if (!move) {
-      console.log("Auto-complete finished!");
       break;
     }
     
@@ -479,7 +489,7 @@ function autoCompleteGame() {
     moveCard(card.id, foundationElement);
     
     // Small delay between cards for visual effect
-    // await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise(resolve => setTimeout(resolve, 100));
   }
 }
 
