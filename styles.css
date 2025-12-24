@@ -102,7 +102,7 @@ body {
     border: 1px solid black;
     border-radius: 4px;
     user-select: none;
-    touch-action: manipulation;
+    touch-action: none;
 }
 .deck-card {
     padding: 2px 5px 0px 5px;
@@ -112,7 +112,7 @@ body {
     background-color: cornflowerblue;
     border: 1px solid black;
     border-radius: 4px;
-    touch-action: manipulation;
+    touch-action: none;
 }
 .card:not(.flipped) {
     color: cornflowerblue;
