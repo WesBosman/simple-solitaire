@@ -106,6 +106,10 @@ body {
     -webkit-touch-callout: none;
     touch-action: manipulation;
 }
+.card * {
+    -webkit-user-select: none;
+    user-select: none;
+}
 .deck-card {
     padding: 2px 5px 0px 5px;
     display: flex;
