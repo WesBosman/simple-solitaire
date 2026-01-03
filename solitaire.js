@@ -498,9 +498,7 @@ async function autoCompleteGame() {
  * and all draggable cards beneath it to a column
  * as long as the move is valid
  */
-const dragstartHandler = (event) => {
-  event.preventDefault();
-  
+const dragstartHandler = (event) => {  
   const parentId = event.target.parentElement.id;
   movedCardFromDeck = parentId === 'flipped-deck';
   event.dataTransfer.setData('card-id', event.target.id);
@@ -565,8 +563,6 @@ const dropHandler = (event) => {
 };
 
 const dragendHandler = (event) => {
-  event.preventDefault();
-  
   // If a card is removed from the deck into a column
   // then update the flipped deck to show the previous card
   if (movedCardFromDeck && validCardMove) {
