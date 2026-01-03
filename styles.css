@@ -1,7 +1,7 @@
 :root {
-   --text-size: 20px;
-   --card-width: 5em;
-   --card-height: 7em;
+   --text-size: 32px;
+   --card-width: 7rem;
+   --card-height: 9rem;
    --card-empty-color: #306a4b;
    --suit-red-color: red;
    --suit-black-color: black;
@@ -18,14 +18,14 @@ body {
     display: grid;
     /* grid-template-rows: auto 1fr; */
     grid-template-rows: calc(var(--card-height) + 10px) 1fr;
-    gap: 1em;
-    padding: 1em;
+    gap: 1rem;
+    padding: 1rem;
     box-sizing: border-box;
 }
 #top-row {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 1em;
+    gap: 1rem;
 }
 #deck {
     grid-column: 1;
@@ -56,7 +56,7 @@ body {
     grid-column: 4 / 8;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1em;
+    gap: 1rem;
     height: 100%;
     height: var(--card-height);
     align-self: stretch;
@@ -64,7 +64,7 @@ body {
 #bottom-row {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 1em;
+    gap: 1rem;
     align-items: start;
 }
 .completed-column {
@@ -140,61 +140,61 @@ body {
     top: 0px;
 }
 .bottom-column .card:nth-child(2) {
-    top: 20px;
-}
-.bottom-column .card:nth-child(3) {
     top: 40px;
 }
-.bottom-column .card:nth-child(4) {
-    top: 60px;
-}
-.bottom-column .card:nth-child(5) {
+.bottom-column .card:nth-child(3) {
     top: 80px;
 }
-.bottom-column .card:nth-child(6) {
-    top: 100px;
-}
-.bottom-column .card:nth-child(7) {
+.bottom-column .card:nth-child(4) {
     top: 120px;
 }
-.bottom-column .card:nth-child(8) {
-    top: 140px;
-}
-.bottom-column .card:nth-child(9) {
+.bottom-column .card:nth-child(5) {
     top: 160px;
 }
-.bottom-column .card:nth-child(10) {
-    top: 180px;
-}
-.bottom-column .card:nth-child(11) {
+.bottom-column .card:nth-child(6) {
     top: 200px;
 }
-.bottom-column .card:nth-child(12) {
-    top: 220px;
-}
-.bottom-column .card:nth-child(13) {
+.bottom-column .card:nth-child(7) {
     top: 240px;
 }
-.bottom-column .card:nth-child(14) {
-    top: 260px;
-}
-.bottom-column .card:nth-child(15) {
+.bottom-column .card:nth-child(8) {
     top: 280px;
 }
-.bottom-column .card:nth-child(16) {
-    top: 300px;
-}
-.bottom-column .card:nth-child(17) {
+.bottom-column .card:nth-child(9) {
     top: 320px;
 }
-.bottom-column .card:nth-child(18) {
-    top: 340px;
-}
-.bottom-column .card:nth-child(19) {
+.bottom-column .card:nth-child(10) {
     top: 360px;
 }
+.bottom-column .card:nth-child(11) {
+    top: 400px;
+}
+.bottom-column .card:nth-child(12) {
+    top: 440px;
+}
+.bottom-column .card:nth-child(13) {
+    top: 480px;
+}
+.bottom-column .card:nth-child(14) {
+    top: 520px;
+}
+.bottom-column .card:nth-child(15) {
+    top: 560px;
+}
+.bottom-column .card:nth-child(16) {
+    top: 600px;
+}
+.bottom-column .card:nth-child(17) {
+    top: 640px;
+}
+.bottom-column .card:nth-child(18) {
+    top: 680px;
+}
+.bottom-column .card:nth-child(19) {
+    top: 720px;
+}
 .bottom-column .card:nth-child(20) {
-    top: 380px;
+    top: 760px;
 }
 .red {
     color: var(--suit-red-color);
@@ -220,17 +220,17 @@ body {
 /* Responsive adjustments */
 @media (max-width: 768px) {
     :root {
-        --text-size: 16px;
-        --card-width: 4em;
-        --card-height: 5.5em;
+        --text-size: 20px;
+        --card-width: 4rem;
+        --card-height: 5.5rem;
     }
     
     #game {
-        gap: 0.5em;
-        padding: 0.5em;
+        gap: 0.5rem;
+        padding: 0.5rem;
     }
     
     #top-row, #bottom-row, #completed-stacks {
-        gap: 0.5em;
+        gap: 0.5rem;
     }
 }

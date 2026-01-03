@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Background -->
+  <rect width="100" height="100" fill="#1E5C3A" rx="15" style="--darkreader-inline-fill: var(--darkreader-background-1e5c3a, #1c5535);" data-darkreader-inline-fill=""></rect>
+  
+  <!-- Card - Ace of Spades (centered) -->
+  <rect x="25" y="15" width="50" height="75" fill="white" rx="4" stroke="#333" stroke-width="1.5" style="--darkreader-inline-fill: var(--darkreader-background-ffffff, #1c1e1f); --darkreader-inline-stroke: var(--darkreader-text-333333, #e6e0d8);" data-darkreader-inline-fill="" data-darkreader-inline-stroke=""></rect>
+  
+  <!-- "A" at top -->
+  <text x="35" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#000" text-anchor="middle" style="--darkreader-inline-fill: var(--darkreader-text-000000, #ffffff);" data-darkreader-inline-fill="">A</text>
+  
+  <!-- Large spade symbol in center -->
+  <text x="50" y="62" font-family="Arial, sans-serif" font-size="28" fill="#000" text-anchor="middle" style="--darkreader-inline-fill: var(--darkreader-text-000000, #ffffff);" data-darkreader-inline-fill="">♠</text>
+  
+  <!-- "A" at bottom (upside down) -->
+  <text x="35" y="80" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#000" text-anchor="middle" transform="rotate(180 50 77)" style="--darkreader-inline-fill: var(--darkreader-text-000000, #ffffff);" data-darkreader-inline-fill="">A</text>
+</svg>
