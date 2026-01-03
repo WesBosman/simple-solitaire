@@ -651,8 +651,3 @@ const doubleClickHandler = (event) => {
     autoCompleteGame();
   }
 };
-
-// touch handlers to prevent weird safari behavior
-const touchHandler = (e) => {
-  e.preventDefault();
-}
