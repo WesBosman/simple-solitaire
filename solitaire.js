@@ -515,8 +515,6 @@ const dragoverHandler = (event) => {
 };
 
 const dropHandler = (event) => {
-  event.preventDefault();
-  
   let target = event.target.parentElement;
 
   // If the column has no cards in it then the target is the column
