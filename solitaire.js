@@ -356,13 +356,33 @@ const moveCard = (cardId, targetId) => {
   }, 300);
 }
 
+const moveCardsToTarget = (cardId, target) => {
+  const cardElement = document.getElementById(cardId);
+  if (!cardElement) return;
+
+  const sourceColumn = cardElement.parentElement;
+  if (!sourceColumn) return;
+
+  const columnCards = Array.from(sourceColumn.children);
+
+  const index = columnCards.findIndex(x => x.id === cardId);
+  if (index === -1) return;
+
+  const stack = columnCards.slice(index);
+
+  stack.forEach((el) => {
+    target.appendChild(el);
+  })
+}
+
 /**
  * If the card is the last card in the column
  * and it is unflipped it should be able to be flipped
  */
 const onFlipCard = (event) => {
-  const id = event.target.id;
-  const card = allCards.find((x) => x.id === id);
+  const cardElement = event.currentTarget;
+  const cardId = cardElement.dataset.cardId || cardElement.id;
+  const card = allCards.find((x) => x.id === cardId);
 
   if (!card) {
     return;
@@ -370,9 +390,9 @@ const onFlipCard = (event) => {
   
   // Find other cards that appear after card a
   const columnCards = Array.prototype.slice.call(
-    document.getElementById(id).parentNode.childNodes
+    document.getElementById(cardId).parentNode.childNodes
   );
-  const colIndex = columnCards.findIndex((x) => x.id === id);
+  const colIndex = columnCards.findIndex((x) => x.id === cardId);
 
   // Check the card you're trying to flip is the last in the column
   if (colIndex !== columnCards.length - 1) {
@@ -380,7 +400,6 @@ const onFlipCard = (event) => {
   }
   
   card.isFlipped = true;
-  const cardElement = document.getElementById(id);
   cardElement.outerHTML = createCards([card]);
 };
 
@@ -512,9 +531,12 @@ async function autoCompleteGame() {
  * as long as the move is valid
  */
 const dragstartHandler = (event) => {  
-  const parentId = event.target.parentElement.id;
+  const cardElement = event.currentTarget;
+  const parentId = cardElement.parentElement?.id;
   movedCardFromDeck = parentId === 'flipped-deck';
-  event.dataTransfer.setData('card-id', event.target.id);
+
+  const cardId = cardElement.dataset.cardId || cardElement.id;
+  event.dataTransfer.setData('card-id', cardId);
   event.effectAllowed = 'move';
 };
 
@@ -528,56 +550,43 @@ const dragoverHandler = (event) => {
 };
 
 const dropHandler = (event) => {
-  let target = event.target.parentElement;
+  event.preventDefault();
+  
+  const cardId = event.dataTransfer.getData('card-id');
+
+  // Get the actual card element (not SVG child)
+  const targetElement = event.target.closest('.card') || event.target.closest('.column');
+  let target = targetElement;
 
   // If the column has no cards in it then the target is the column
-  // instead of the columns parent
-  if ([...event.target.classList].includes('column')) {
-    target = event.target;
-    const cardId = event.dataTransfer.getData('card-id');
-
-    // Find other cards that appear after card a
-    const columnCards = Array.prototype.slice.call(
-      document.getElementById(cardId).parentNode.childNodes
-    );
-    const card = columnCards.find((x) => x.id === cardId);
-    const index = columnCards.indexOf(card);
-    const otherCards = columnCards.slice(index);
-
-    otherCards.forEach((x) => {
-      target.appendChild(document.getElementById(x.id));
-    });
+  if (targetElement && targetElement.classList.contains('column')) {
+    target = targetElement;
+    moveCardsToTarget(cardId, target);
     validCardMove = true;
-  } else {
-    const cardId = event.dataTransfer.getData('card-id');
-    const lastCardInTarget = target.children[target.children.length - 1];
+  } else if (targetElement && targetElement.classList.contains('card')) {
+    // Find the column that contains this target card
+    const columnElement = targetElement.parentElement;
+    const lastCardInTarget = columnElement.children[columnElement.children.length - 1];
 
     const cardA = allCards.find((x) => x.id === cardId);
     const cardB = allCards.find((x) => x.id === lastCardInTarget.id);
 
     const isLegalMove = isValidMove(cardA, cardB);
     if (isLegalMove) {
-      // Find other cards that appear after card a
-      const columnCards = Array.prototype.slice.call(
-        document.getElementById(cardId).parentNode.childNodes
-      );
-      const card = columnCards.find((x) => x.id === cardId);
-      const index = columnCards.indexOf(card);
-      const otherCards = columnCards.slice(index);
-
-      otherCards.forEach((x) => {
-        target.appendChild(document.getElementById(x.id));
-      });
+      moveCardsToTarget(cardId, columnElement);
       validCardMove = true;
     }
   }
 };
 
 const dragendHandler = (event) => {
+  const cardElement = event.currentTarget;
+  const cardId = cardElement.dataset.cardId || cardElement.id;
+
   // If a card is removed from the deck into a column
   // then update the flipped deck to show the previous card
   if (movedCardFromDeck && validCardMove) {
-    flippedDeck = flippedDeck.filter((x) => x.id !== event.target.id);
+    flippedDeck = flippedDeck.filter((x) => x.id !== cardId);
 
     if (flippedDeck.length >= 1) {
       flippedDeckSection.innerHTML = createCards([flippedDeck[0]]);
