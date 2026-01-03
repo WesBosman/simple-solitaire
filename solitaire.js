@@ -590,13 +590,20 @@ const dragendHandler = (event) => {
 };
 
 const doubleClickHandler = (event) => {
-  const parentId = event.target.parentElement.id;
+  // Find the actual card element, regardless of which SVG child was clicked
+  const cardEl = event.target.closest(".card");
+  if (!cardEl) return;
 
-  const clickedCard = allCards.find((x) => x.id === event.target.id);
+  // Pile/column the card is currently in
+  const parentPileEl = cardEl.closest(".bottom-column, .completed-column, #flipped-deck, #deck");
+  const parentId = parentPileEl?.id ?? "";
 
-  if (clickedCard === undefined) {
-    return;
-  }
+  // Get the card id from the wrapper (prefer dataset if you switch to it)
+  const cardId = cardEl.dataset.cardId || cardEl.id;
+  if (!cardId) return;
+
+  const clickedCard = allCards.find((x) => x.id === cardId);
+  if (!clickedCard) return;
 
   const cardSuitName = clickedCard.suitName;
   const currentCompletedCardsForSuit = completedCards[cardSuitName];
@@ -607,24 +614,24 @@ const doubleClickHandler = (event) => {
     return;
   }
 
-  // Get the card and move it to the completed cards section
-  if (cardSuitName === suitName.heart) {
-    moveCard(clickedCard.id, 'completed-hearts')
-  } else if (cardSuitName === suitName.club) {
-    moveCard(clickedCard.id, 'completed-clubs')
-  } else if (cardSuitName === suitName.diamond) {
-    moveCard(clickedCard.id, 'completed-diamonds')
-  } else if (cardSuitName === suitName.spade) {
-    moveCard(clickedCard.id, 'completed-spades')
-  }
+  // Move it to correct foundation
+  const completedTargetIdBySuit = {
+    [suitName.heart]: "completed-hearts",
+    [suitName.club]: "completed-clubs",
+    [suitName.diamond]: "completed-diamonds",
+    [suitName.spade]: "completed-spades",
+  };
 
-  const newCompletedCards = [...currentCompletedCardsForSuit, clickedCard];
-  completedCards[cardSuitName] = newCompletedCards;
+  const targetId = completedTargetIdBySuit[cardSuitName];
+  if (!targetId) return;
 
-  // If the card was moved from the deck to complete cards remove last
-  // element from flipped cards
-  if (parentId === 'flipped-deck') {
-    flippedDeck = flippedDeck.filter((x) => x.id !== event.target.id);
+  moveCard(clickedCard.id, targetId);
+
+  completedCards[cardSuitName] = [...currentCompletedCardsForSuit, clickedCard];
+
+  // If the card was moved from the flipped deck to complete cards
+  if (parentId === "flipped-deck") {
+    flippedDeck = flippedDeck.filter((x) => x.id !== cardId);
 
     if (flippedDeck.length >= 1) {
       flippedDeckSection.innerHTML = createCards([flippedDeck[0]]);
