@@ -1,7 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@700&display=swap');
+
 :root {
    --text-size: 32px;
    --card-width: 7rem;
-   --card-height: 9rem;
+   --card-height: 190px;
    --card-empty-color: #306a4b;
    --suit-red-color: red;
    --suit-black-color: black;
@@ -106,11 +108,14 @@ body {
     -webkit-touch-callout: none;
     touch-action: manipulation;
 }
-.card::before {
-    content: attr(data-label);
-    user-select: none;
-    -webkit-user-select: none;
-    pointer-events: none;
+.card svg {
+    width: 100%;
+    height: 100%;
+    font-family: 'Crimson Text', 'Georgia', serif;
+}
+
+.card-rank, .card-suit {
+    fill: currentColor; /* Inherits from parent .red or .black class */
 }
 .deck-card {
     padding: 2px 5px 0px 5px;
