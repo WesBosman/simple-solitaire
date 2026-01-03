@@ -219,8 +219,8 @@ body {
 @media (max-width: 768px) {
     :root {
         --text-size: 20px;
-        --card-width: 4rem;
-        --card-height: 5.5rem;
+        --card-width: 2.5rem;
+        --card-height: 4.5rem;
     }
     
     #game {
