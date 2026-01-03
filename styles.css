@@ -101,7 +101,6 @@ body {
     background-color: white;
     border: 1px solid black;
     border-radius: 4px;
-    user-select: none;
 }
 .deck-card {
     padding: 2px 5px 0px 5px;
