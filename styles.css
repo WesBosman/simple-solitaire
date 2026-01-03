@@ -108,6 +108,9 @@ body {
 }
 .card::before {
     content: attr(data-label);
+    user-select: none;
+    -webkit-user-select: none;
+    pointer-events: none;
 }
 .deck-card {
     padding: 2px 5px 0px 5px;
