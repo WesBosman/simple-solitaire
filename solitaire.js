@@ -499,6 +499,8 @@ async function autoCompleteGame() {
  * as long as the move is valid
  */
 const dragstartHandler = (event) => {
+  event.preventDefault();
+  
   const parentId = event.target.parentElement.id;
   movedCardFromDeck = parentId === 'flipped-deck';
   event.dataTransfer.setData('card-id', event.target.id);
@@ -515,6 +517,8 @@ const dragoverHandler = (event) => {
 };
 
 const dropHandler = (event) => {
+  event.preventDefault();
+  
   let target = event.target.parentElement;
 
   // If the column has no cards in it then the target is the column
@@ -561,6 +565,8 @@ const dropHandler = (event) => {
 };
 
 const dragendHandler = (event) => {
+  event.preventDefault();
+  
   // If a card is removed from the deck into a column
   // then update the flipped deck to show the previous card
   if (movedCardFromDeck && validCardMove) {
@@ -622,3 +628,13 @@ const doubleClickHandler = (event) => {
     autoCompleteGame();
   }
 };
+
+// touch handlers to prevent weird safari behavior
+const touchHandler = (e) => {
+  e.preventDefault();
+}
+
+//document.addEventListener('touchstart', touchHandler, {passive:false})
+//document.addEventListener('touchmove', touchHandler, {passive:false})
+//document.addEventListener('touchend', touchHandler, {passive:false})
+//document.addEventListener('touchcancel', touchHandler, {passive:false})
