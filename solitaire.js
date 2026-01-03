@@ -276,9 +276,7 @@ const createCards = (cards) => {
     const isDraggable = card.isFlipped
       ? 'draggable="true" ondragstart="dragstartHandler(event)" ondragend="dragendHandler(event)"'
       : '';
-    html += `<div id=${card.id} ${isDraggable} class="card ${card.suitColor} ${isFlipped}" ${onDoubleClick} ${onFlipCard}>
-            ${card.displayString}
-        </div>`;
+    html += `<div id=${card.id} ${isDraggable} class="card ${card.suitColor} ${isFlipped}" ${onDoubleClick} ${onFlipCard} data-label="${card.displayString}"></div>`;
   });
   return html;
 };
@@ -466,8 +464,6 @@ async function autoCompleteGame() {
     const { card, column } = move;
     const suitName = card.suitName;
     
-    // TODO: Off by one issue in here
-    // Get the foundation element
     let foundationElement;
     if (suitName === 'heart') {
       foundationElement = completedHeartsSection.id;
@@ -627,8 +623,3 @@ const doubleClickHandler = (event) => {
 const touchHandler = (e) => {
   e.preventDefault();
 }
-
-//document.addEventListener('touchstart', touchHandler, {passive:false})
-//document.addEventListener('touchmove', touchHandler, {passive:false})
-//document.addEventListener('touchend', touchHandler, {passive:false})
-//document.addEventListener('touchcancel', touchHandler, {passive:false})

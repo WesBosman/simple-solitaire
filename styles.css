@@ -106,9 +106,8 @@ body {
     -webkit-touch-callout: none;
     touch-action: manipulation;
 }
-.card * {
-    -webkit-user-select: none;
-    user-select: none;
+.card::before {
+    content: attr(data-label);
 }
 .deck-card {
     padding: 2px 5px 0px 5px;
