@@ -601,6 +601,8 @@ function onPointerDownCard(e) {
 function onPointerMove(e) {
   if (!drag || e.pointerId !== drag.pointerId) return;
 
+  e.preventDefault();
+
   const dx = e.clientX - drag.startX;
   const dy = e.clientY - drag.startY;
 
