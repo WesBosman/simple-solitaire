@@ -141,7 +141,7 @@ body {
     pointer-events: none;
 }
 
-.card-rank, .card-suit {
+.card-rank, .card-suit, .card-suit-large {
     fill: currentColor; /* Inherits from parent .red or .black class */
 }
 .deck-card {
