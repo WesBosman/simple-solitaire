@@ -220,6 +220,7 @@ let columnSeven = makeColumn(d, 7);
 
 let movedCardFromDeck = false;
 let validCardMove = false;
+let drag = null;
 
 /**
  * Draw a card from the deck.
@@ -268,15 +269,10 @@ completedDiamondsSection.style.color = suitColor.red;
 const createCards = (cards) => {
   let html = '';
   cards.forEach((card, index) => {
-    const isLastCard = index === cards.length - 1;
     const isFlipped = card.isFlipped ? 'flipped' : '';
     const onFlipCard =
       card.isFlipped === false ? 'onclick=onFlipCard(event)' : '';
-    const onDoubleClick = 'ondblclick="doubleClickHandler(event)"';
-    const isDraggable = card.isFlipped
-      ? 'draggable="true" ondragstart="dragstartHandler(event)" ondragend="dragendHandler(event)"'
-      : '';
-    html += `<div id=${card.id} ${isDraggable} class="card ${card.suitColor} ${isFlipped}" ${onDoubleClick} ${onFlipCard}>
+    html += `<div id=${card.id} class="card ${card.suitColor} ${isFlipped}" ${onFlipCard}>
       <svg viewBox="0 0 100 150" xmlns="http://www.w3.org/2000/svg">
         <!-- Top left: rank -->
         <text x="0" y="16" font-size="32" font-weight="bold" class="card-rank">${card.cardString}</text>
@@ -307,6 +303,10 @@ columnFiveSection.innerHTML = createCards(columnFive);
 columnSixSection.innerHTML = createCards(columnSix);
 columnSevenSection.innerHTML = createCards(columnSeven);
 
+setupDesktopDoubleClick();
+setupMobileDoubleTap();
+setupPointerDnD();
+
 /**
  * Add an event listener to draw from the deck
  */
@@ -320,6 +320,10 @@ deckSection.addEventListener('click', (e) => {
     d = flippedDeck.slice();
     flippedDeck = [];
   }
+
+  setupDesktopDoubleClick();
+  setupMobileDoubleTap();
+  setupPointerDnD(); 
 });
 
 /**
@@ -401,6 +405,10 @@ const onFlipCard = (event) => {
   
   card.isFlipped = true;
   cardElement.outerHTML = createCards([card]);
+
+  setupDesktopDoubleClick();
+  setupMobileDoubleTap();
+  setupPointerDnD(); 
 };
 
 /**
@@ -411,7 +419,7 @@ const onFlipCard = (event) => {
  */
 const isValidMove = (cardA, cardB) => {
   if (cardA && cardB) {
-    const isOffByOne = Math.abs(cardA.cardNumber - cardB.cardNumber) === 1;
+    const isOffByOne = cardB.cardNumber - cardA.cardNumber === 1;
     const isDifferentSuit =
       (cardA.suitColor === suitColor.red &&
         cardB.suitColor === suitColor.black) ||
@@ -499,17 +507,16 @@ async function autoCompleteGame() {
     
     const { card, column } = move;
     const suitName = card.suitName;
-    
-    let foundationElement;
-    if (suitName === 'heart') {
-      foundationElement = completedHeartsSection.id;
-    } else if (suitName === 'spade') {
-      foundationElement = completedSpadesSection.id;
-    } else if (suitName === 'club') {
-      foundationElement = completedClubsSection.id;
-    } else if (suitName === 'diamond') {
-      foundationElement = completedDiamondsSection.id;
-    }
+
+    // Move it to correct foundation
+    const completedTargetIdBySuit = {
+      [suitName.heart]: "completed-hearts",
+      [suitName.club]: "completed-clubs",
+      [suitName.diamond]: "completed-diamonds",
+      [suitName.spade]: "completed-spades",
+    };
+
+    const foundationElement = completedTargetIdBySuit[suitName];
     
     // Update the completed cards array
     completedCards[suitName] = [...completedCards[suitName], card];
@@ -525,91 +532,204 @@ async function autoCompleteGame() {
   }
 }
 
-/**
- * Should be able to drag and drop a draggable card
- * and all draggable cards beneath it to a column
- * as long as the move is valid
- */
-const dragstartHandler = (event) => {  
-  const cardElement = event.currentTarget;
-  const parentId = cardElement.parentElement?.id;
-  movedCardFromDeck = parentId === 'flipped-deck';
+function setupPointerDnD() {
+  document.querySelectorAll('.card.flipped').forEach((card) => {
+    card.addEventListener('pointerdown', onPointerDownCard);
+  })
+}
 
-  const cardId = cardElement.dataset.cardId || cardElement.id;
-  event.dataTransfer.setData('card-id', cardId);
-  event.effectAllowed = 'move';
-};
+function onPointerDownCard(e) {
+  // Only left-click / primary touch
+  if (e.button !== undefined && e.button !== 0) return;
 
-/**
- * Have to call prevent default when dragging over in order to drop
- * @param {*} event
- */
-const dragoverHandler = (event) => {
-  event.preventDefault();
-  event.dropEffect = 'move';
-};
+  const cardEl = e.currentTarget; // IMPORTANT (wrapper .card)
+  const cardId = cardEl.dataset.cardId || cardEl.id;
+  if (!cardId) return;
 
-const dropHandler = (event) => {
-  event.preventDefault();
-  
-  const cardId = event.dataTransfer.getData('card-id');
+  const sourceColumn = cardEl.closest(".column, #flipped-deck");
+  if (!sourceColumn) return;
 
-  // Get the actual card element (not SVG child)
-  const targetElement = event.target.closest('.card') || event.target.closest('.column');
-  let target = targetElement;
+  // If you only want to allow dragging from tableau + flipped deck, you can gate here
+  movedCardFromDeck = sourceColumn.id === "flipped-deck";
 
-  // If the column has no cards in it then the target is the column
-  if (targetElement && targetElement.classList.contains('column')) {
-    target = targetElement;
-    moveCardsToTarget(cardId, target);
-    validCardMove = true;
-  } else if (targetElement && targetElement.classList.contains('card')) {
-    // Find the column that contains this target card
-    const columnElement = targetElement.parentElement;
-    const lastCardInTarget = columnElement.children[columnElement.children.length - 1];
+  // Build the moving stack: card + all below it (in the same column)
+  const siblings = Array.from(sourceColumn.children).filter((el) => el.classList.contains("card"));
+  const startIndex = siblings.findIndex((el) => (el.dataset.cardId || el.id) === cardId);
+  if (startIndex === -1) return;
 
-    const cardA = allCards.find((x) => x.id === cardId);
-    const cardB = allCards.find((x) => x.id === lastCardInTarget.id);
+  const stackEls = siblings.slice(startIndex);
 
-    const isLegalMove = isValidMove(cardA, cardB);
-    if (isLegalMove) {
-      moveCardsToTarget(cardId, columnElement);
-      validCardMove = true;
+  // Create a floating container (“ghost”) at the same screen position
+  const firstRect = stackEls[0].getBoundingClientRect();
+  const ghost = document.createElement("div");
+  ghost.className = "drag-ghost";
+  ghost.style.transform = `translate(${firstRect.left}px, ${firstRect.top}px)`;
+
+  // Move DOM nodes into ghost (so you see the real cards moving)
+  stackEls.forEach((el) => {
+    el.classList.add("dragging");
+    ghost.appendChild(el);
+  });
+
+  document.body.appendChild(ghost);
+
+  // Store drag session state
+  drag = {
+    pointerId: e.pointerId,
+    cardId,
+    sourceColumn,
+    stackEls, // now inside ghost
+    ghost,
+    startX: e.clientX,
+    startY: e.clientY,
+    originLeft: firstRect.left,
+    originTop: firstRect.top,
+    lastDropColumn: null,
+  };
+
+  // Capture pointer so we keep getting move/up events even if finger leaves element
+  cardEl.setPointerCapture(e.pointerId);
+
+  document.addEventListener("pointermove", onPointerMove, { passive: false });
+  document.addEventListener("pointerup", onPointerUp, { passive: false });
+  document.addEventListener("pointercancel", onPointerCancel, { passive: false });
+
+  // Prevent iOS from treating this as scroll/zoom
+  e.preventDefault();
+}
+
+function onPointerMove(e) {
+  if (!drag || e.pointerId !== drag.pointerId) return;
+
+  const dx = e.clientX - drag.startX;
+  const dy = e.clientY - drag.startY;
+
+  drag.ghost.style.transform = `translate(${drag.originLeft + dx}px, ${drag.originTop + dy}px)`;
+
+  // Track which column we’re over (hit-test at finger position)
+  const elUnderFinger = document.elementFromPoint(e.clientX, e.clientY);
+  const col = elUnderFinger?.closest(".column, .completed-column");
+  drag.lastDropColumn = col || null;
+
+  e.preventDefault();
+}
+
+function onPointerUp(e) {
+  if (!drag || e.pointerId !== drag.pointerId) return;
+
+  cleanupPointerListeners();
+
+  const target = drag.lastDropColumn;
+  validCardMove = false;
+
+  if (target) {
+    const droppingOnCompleted = target.classList.contains("completed-column");
+
+    if (droppingOnCompleted) {
+      // Don't allow drag-drop to foundation (use double-click for that)
+      validCardMove = false;
+    } else {
+      // Tableau column rules
+      const targetCards = Array.from(target.children).filter((el) => 
+        el.classList.contains("card")
+      );
+      
+      if (targetCards.length === 0) {
+        // Empty column: only Kings allowed
+        const cardA = allCards.find((x) => x.id === drag.cardId);
+        validCardMove = cardA && cardA.cardNumber === cardNumber.king;
+      } else {
+        const lastCardEl = targetCards[targetCards.length - 1];
+        const lastCardId = lastCardEl.dataset.cardId || lastCardEl.id;
+
+        const cardA = allCards.find((x) => x.id === drag.cardId);
+        const cardB = allCards.find((x) => x.id === lastCardId);
+
+        validCardMove = isValidMove(cardA, cardB);
+      }
+    }
+
+    if (validCardMove) {
+      // Move stack cards from ghost into the target column
+      const movingEls = Array.from(drag.ghost.children);
+      movingEls.forEach((el) => target.appendChild(el));
     }
   }
-};
 
-const dragendHandler = (event) => {
-  const cardElement = event.currentTarget;
-  const cardId = cardElement.dataset.cardId || cardElement.id;
+  // If invalid move OR no target, return to source column
+  if (!validCardMove) {
+    const movingEls = Array.from(drag.ghost.children);
+    movingEls.forEach((el) => drag.sourceColumn.appendChild(el));
+  }
 
-  // If a card is removed from the deck into a column
-  // then update the flipped deck to show the previous card
+  // Remove ghost container
+  drag.stackEls.forEach((el) => el.classList.remove("dragging"));
+  drag.ghost.remove();
+
+  // If you moved from flipped deck and it was valid, update flipped deck UI
   if (movedCardFromDeck && validCardMove) {
-    flippedDeck = flippedDeck.filter((x) => x.id !== cardId);
+    const draggedId = drag.cardId;
+    flippedDeck = flippedDeck.filter((x) => x.id !== draggedId);
 
     if (flippedDeck.length >= 1) {
       flippedDeckSection.innerHTML = createCards([flippedDeck[0]]);
+      setupDesktopDoubleClick();
+      setupMobileDoubleTap();
+      setupPointerDnD(); // re-bind for newly rendered card
     }
   }
 
-  // Set the variables back to false
   movedCardFromDeck = false;
   validCardMove = false;
-};
+  drag = null;
 
-const doubleClickHandler = (event) => {
-  // Find the actual card element, regardless of which SVG child was clicked
-  const cardEl = event.target.closest(".card");
-  if (!cardEl) return;
+  e.preventDefault();
+}
+
+function onPointerCancel(e) {
+  if (!drag || e.pointerId !== drag.pointerId) return;
+  cleanupPointerListeners();
+
+  // Return stack to source
+  const movingEls = Array.from(drag.ghost.children);
+  movingEls.forEach((el) => drag.sourceColumn.appendChild(el));
+
+  drag.stackEls.forEach((el) => el.classList.remove("dragging"));
+  drag.ghost.remove();
+
+  movedCardFromDeck = false;
+  validCardMove = false;
+  drag = null;
+
+  e.preventDefault();
+}
+
+function cleanupPointerListeners() {
+  document.removeEventListener("pointermove", onPointerMove);
+  document.removeEventListener("pointerup", onPointerUp);
+  document.removeEventListener("pointercancel", onPointerCancel);
+}
+
+function isTopCardInStack(cardEl) {
+  const stack = cardEl.closest('.column, .completed-column, #flipped-deck')
+  if (!stack) return false;
+
+  const cards = Array.from(stack.children).filter((el) => el.classList.contains('card'))
+  if (cards.length === 0) return false;
+
+  return cards[cards.length-1] ===cardEl;
+}
+
+function autoMoveCard(cardEl) {
+  if (!isTopCardInStack(cardEl)) return;
+  
+  // Get the card id from the wrapper
+  const cardId = cardEl.dataset.cardId || cardEl.id;
+  if (!cardId) return;
 
   // Pile/column the card is currently in
   const parentPileEl = cardEl.closest(".bottom-column, .completed-column, #flipped-deck, #deck");
   const parentId = parentPileEl?.id ?? "";
-
-  // Get the card id from the wrapper (prefer dataset if you switch to it)
-  const cardId = cardEl.dataset.cardId || cardEl.id;
-  if (!cardId) return;
 
   const clickedCard = allCards.find((x) => x.id === cardId);
   if (!clickedCard) return;
@@ -644,10 +764,47 @@ const doubleClickHandler = (event) => {
 
     if (flippedDeck.length >= 1) {
       flippedDeckSection.innerHTML = createCards([flippedDeck[0]]);
+
+      setupDesktopDoubleClick();
+      setupMobileDoubleTap();
+      setupPointerDnD(); 
     }
   }
 
   if (checkAutoComplete()) {
     autoCompleteGame();
   }
-};
+}
+
+function setupDesktopDoubleClick() {
+  document.querySelectorAll('.card.flipped').forEach((card) => {
+    card.addEventListener('dblclick', (e) => {
+      autoMoveCard(e.currentTarget);
+    })
+  })
+}
+
+function setupMobileDoubleTap() {
+  let lastTapTime = 0;
+  let lastTappedCard = null;
+
+  document.querySelectorAll('.card.flipped').forEach((card) => {
+    card.addEventListener('touchend', (e) => {
+      const now = Date.now();
+      const timeSinceLastTap = now - lastTapTime;
+
+      if (lastTappedCard === card &&
+        timeSinceLastTap > 0 && 
+        timeSinceLastTap < 300
+      ) {
+        e.preventDefault();
+        autoMoveCard(card);
+        lastTapTime = 0;
+        lastTappedCard = null;
+      } else {
+        lastTapTime = now;
+        lastTappedCard = card;
+      }
+    }, { passive: false })
+  })
+}

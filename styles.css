@@ -115,6 +115,20 @@ body {
     pointer-events: none;
 }
 
+.drag-ghost {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 1000;
+    will-change: transform;
+}
+
+.drag-ghost .card {
+    position: relative;
+    pointer-events: none;
+}
+
 .card-rank, .card-suit {
     fill: currentColor; /* Inherits from parent .red or .black class */
 }
