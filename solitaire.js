@@ -274,20 +274,11 @@ const createCards = (cards) => {
       card.isFlipped === false ? 'onclick=onFlipCard(event)' : '';
     html += `<div id=${card.id} class="card ${card.suitColor} ${isFlipped}" ${onFlipCard}>
       <svg viewBox="0 0 100 150" xmlns="http://www.w3.org/2000/svg">
-        <!-- Top left: rank -->
         <text x="0" y="16" class="card-rank">${card.cardString}</text>
-        
-        <!-- Top right: suit -->
         <text x="100" y="16" text-anchor="end" class="card-suit">${card.suitString}</text>
-        
-        <!-- Center: large suit -->
         <text x="50" y="90" text-anchor="middle" class="card-suit-large">${card.suitString}</text>
-        
-        <!-- Bottom left: suit (upside down) -->
-        <text x="0" y="130" class="card-suit" transform="rotate(180 10 131.5)">${card.suitString}</text>
-        
-        <!-- Bottom right: rank (upside down) -->
-        <text x="105" y="130" text-anchor="end" class="card-rank" transform="rotate(180 90 131.5)">${card.cardString}</text>
+        <text x="0" y="130" class="card-suit">${card.suitString}</text>
+        <text x="100" y="130" text-anchor="end" class="card-rank">${card.cardString}</text>
       </svg>
     </div>`;
   });
@@ -522,7 +513,10 @@ async function autoCompleteGame() {
     completedCards[suitName] = [...completedCards[suitName], card];
     
     // Remove from column array
-    column.cards.pop();
+    const cardIndex = column.cards.findIndex(c => c.id === card.id);
+    if (cardIndex > -1) {
+      column.cards.splice(cardIndex, 1);
+    }
     
     // Animate the card
     moveCard(card.id, foundationElement);
@@ -773,9 +767,9 @@ function autoMoveCard(cardEl) {
     }
   }
 
-  if (checkAutoComplete()) {
-    autoCompleteGame();
-  }
+  // if (checkAutoComplete()) {
+  //   autoCompleteGame();
+  // }
 }
 
 function setupDesktopDoubleClick() {

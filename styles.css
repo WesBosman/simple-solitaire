@@ -3,7 +3,7 @@
 :root {
    --text-size: 32px;
    --card-width: 7rem;
-   --card-height: 190px;
+   --card-height: 182px;
    --card-empty-color: #306a4b;
    --suit-red-color: red;
    --suit-black-color: black;
@@ -116,11 +116,11 @@ body {
 }
 
 .card-rank {
-   font-size: 32px;
+   font-size: 30px;
 }
 
 .card-suit {
-   font-size: 32px;
+   font-size: 30px;
 }
 
 .card-suit-large {
