@@ -115,6 +115,18 @@ body {
     pointer-events: none;
 }
 
+.card-rank {
+   font-size: 32px;
+}
+
+.card-suit {
+   font-size: 32px;
+}
+
+.card-suit-large {
+   font-size: 64px;
+}
+
 .drag-ghost {
     position: fixed;
     top: 0;
@@ -261,4 +273,16 @@ body {
     #top-row, #bottom-row, #completed-stacks {
         gap: 0.5rem;
     }
+   
+   .card-rank {
+      font-size: 48px;
+   }
+
+   .card-suit {
+      font-size: 48px;
+   }
+
+   .card-suit-large {
+      font-size: 64px;
+   }
 }
