@@ -275,19 +275,19 @@ const createCards = (cards) => {
     html += `<div id=${card.id} class="card ${card.suitColor} ${isFlipped}" ${onFlipCard}>
       <svg viewBox="0 0 100 150" xmlns="http://www.w3.org/2000/svg">
         <!-- Top left: rank -->
-        <text x="0" y="16" font-size="32" font-weight="bold" class="card-rank">${card.cardString}</text>
+        <text x="0" y="16" font-size="40" font-weight="bold" class="card-rank">${card.cardString}</text>
         
         <!-- Top right: suit -->
-        <text x="100" y="16" font-size="32" text-anchor="end" class="card-suit">${card.suitString}</text>
+        <text x="100" y="16" font-size="40" text-anchor="end" class="card-suit">${card.suitString}</text>
         
         <!-- Center: large suit -->
         <text x="50" y="90" font-size="64" text-anchor="middle" class="card-suit">${card.suitString}</text>
         
         <!-- Bottom left: suit (upside down) -->
-        <text x="0" y="130" font-size="32" class="card-suit" transform="rotate(180 10 131.5)">${card.suitString}</text>
+        <text x="0" y="130" font-size="40" class="card-suit" transform="rotate(180 10 131.5)">${card.suitString}</text>
         
         <!-- Bottom right: rank (upside down) -->
-        <text x="105" y="130" font-size="32" font-weight="bold" text-anchor="end" class="card-rank" transform="rotate(180 90 131.5)">${card.cardString}</text>
+        <text x="105" y="130" font-size="40" font-weight="bold" text-anchor="end" class="card-rank" transform="rotate(180 90 131.5)">${card.cardString}</text>
       </svg>
     </div>`;
   });
@@ -722,7 +722,7 @@ function isTopCardInStack(cardEl) {
 
 function autoMoveCard(cardEl) {
   if (!isTopCardInStack(cardEl)) return;
-  
+
   // Get the card id from the wrapper
   const cardId = cardEl.dataset.cardId || cardEl.id;
   if (!cardId) return;
