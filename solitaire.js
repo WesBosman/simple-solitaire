@@ -127,11 +127,23 @@ let flippedDeck = [];
  * @property {Card[]} diamond
  */
 let completedCards = {
-  spade: [],
-  heart: [],
-  club: [],
-  diamond: [],
+  [suitName.heart]: [],
+  [suitName.spade]: [],
+  [suitName.club]: [],
+  [suitName.diamond]: [],
 };
+
+/**
+ * Map a suit name to a foundation id
+ * @readonly
+ * @object
+ */
+const suitFoundationMap = {
+  [suitName.heart]: 'completed-hearts',
+  [suitName.spade]: 'completed-spades',
+  [suitName.club]: 'completed-clubs',
+  [suitName.diamond]: 'completed-diamonds'
+}
 
 /**
  * Shuffle a deck of cards
@@ -324,6 +336,8 @@ const moveCard = (cardId, targetId) => {
   const card = document.getElementById(cardId);
   const target = document.getElementById(targetId);
 
+  if (!card || !target) return;
+
   const originalZIndex = card.style.zIndex;
   card.style.zIndex = "10";
 
@@ -438,15 +452,16 @@ function checkAutoComplete() {
 
 // Get all cards in the column
 function getAllCardsInColumn(columnId) {
-  const cards = Array.prototype.slice.call(
-    document.getElementById(columnId).childNodes
+  const columnElement = document.getElementById(columnId);
+  if (!columnElement) return [];
+  
+  const cardElements = Array.from(columnElement.children).filter(el => 
+    el.classList.contains('card')
   );
 
-  return cards.map(x => {
-    const c = allCards.find(y => y.id === x.id);
-
-    return c;
-  })
+  return cardElements
+    .map(el => allCards.find(c => c.id === el.id))
+    .filter(c => c !== undefined);
 }
 
 // Find the next card that can be moved to a foundation
@@ -499,15 +514,7 @@ async function autoCompleteGame() {
     const { card, column } = move;
     const suitName = card.suitName;
 
-    // Move it to correct foundation
-    const completedTargetIdBySuit = {
-      [suitName.heart]: "completed-hearts",
-      [suitName.club]: "completed-clubs",
-      [suitName.diamond]: "completed-diamonds",
-      [suitName.spade]: "completed-spades",
-    };
-
-    const foundationElement = completedTargetIdBySuit[suitName];
+    const foundationElement = suitFoundationMap[suitName];
     
     // Update the completed cards array
     completedCards[suitName] = [...completedCards[suitName], card];
@@ -739,15 +746,7 @@ function autoMoveCard(cardEl) {
     return;
   }
 
-  // Move it to correct foundation
-  const completedTargetIdBySuit = {
-    [suitName.heart]: "completed-hearts",
-    [suitName.club]: "completed-clubs",
-    [suitName.diamond]: "completed-diamonds",
-    [suitName.spade]: "completed-spades",
-  };
-
-  const targetId = completedTargetIdBySuit[cardSuitName];
+  const targetId = suitFoundationMap[cardSuitName];
   if (!targetId) return;
 
   moveCard(clickedCard.id, targetId);
@@ -767,9 +766,9 @@ function autoMoveCard(cardEl) {
     }
   }
 
-  // if (checkAutoComplete()) {
-  //   autoCompleteGame();
-  // }
+  if (checkAutoComplete()) {
+    autoCompleteGame();
+  }
 }
 
 function setupDesktopDoubleClick() {
