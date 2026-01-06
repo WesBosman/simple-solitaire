@@ -543,17 +543,15 @@ function onPointerDownCard(e) {
   // Only left-click / primary touch
   if (e.button !== undefined && e.button !== 0) return;
 
-  const cardEl = e.currentTarget; // IMPORTANT (wrapper .card)
+  const cardEl = e.currentTarget;
   const cardId = cardEl.dataset.cardId || cardEl.id;
   if (!cardId) return;
 
   const sourceColumn = cardEl.closest(".column, #flipped-deck");
   if (!sourceColumn) return;
 
-  // If you only want to allow dragging from tableau + flipped deck, you can gate here
   movedCardFromDeck = sourceColumn.id === "flipped-deck";
 
-  // Build the moving stack: card + all below it (in the same column)
   const siblings = Array.from(sourceColumn.children).filter((el) => el.classList.contains("card"));
   const startIndex = siblings.findIndex((el) => (el.dataset.cardId || el.id) === cardId);
   if (startIndex === -1) return;
@@ -567,8 +565,11 @@ function onPointerDownCard(e) {
   ghost.style.transform = `translate(${firstRect.left}px, ${firstRect.top}px)`;
 
   // Move DOM nodes into ghost (so you see the real cards moving)
-  stackEls.forEach((el) => {
+  stackEls.forEach((el, index) => {
     el.classList.add("dragging");
+    el.style.position = 'absolute';
+    el.style.top = `${index * 30}px`
+    el.style.left = '0'
     ghost.appendChild(el);
   });
 
@@ -655,14 +656,24 @@ function onPointerUp(e) {
     if (validCardMove) {
       // Move stack cards from ghost into the target column
       const movingEls = Array.from(drag.ghost.children);
-      movingEls.forEach((el) => target.appendChild(el));
+      movingEls.forEach((el) => {
+        el.style.position = '';
+        el.style.top = '';
+        el.style.left = '';
+        target.appendChild(el);
+      });    
     }
   }
 
   // If invalid move OR no target, return to source column
   if (!validCardMove) {
     const movingEls = Array.from(drag.ghost.children);
-    movingEls.forEach((el) => drag.sourceColumn.appendChild(el));
+    movingEls.forEach((el) => {
+      el.style.position = '';
+      el.style.top = '';
+      el.style.left = '';
+      target.appendChild(el);
+    });  
   }
 
   // Remove ghost container
