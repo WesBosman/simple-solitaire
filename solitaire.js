@@ -672,7 +672,7 @@ function onPointerUp(e) {
       el.style.position = '';
       el.style.top = '';
       el.style.left = '';
-      target.appendChild(el);
+      drag.sourceColumn.appendChild(el);
     });  
   }
 
