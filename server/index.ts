@@ -1,10 +1,13 @@
 import { Hono } from 'hono'
 import { serveStatic } from 'hono/bun'
+import { logger } from 'hono/logger'
 import { eq } from 'drizzle-orm'
 import { db } from './db'
 import { games } from './schema'
 
 const app = new Hono()
+
+app.use('*', logger())
 
 app.post('/api/games', async (c) => {
   const [game] = await db
@@ -48,7 +51,10 @@ app.get('/api/stats', async (c) => {
   return c.json({ total, won, avgMoves })
 })
 
-app.use('/*', serveStatic({ root: './' }))
+app.use('/*', async (c, next) => {
+  if (c.req.path.startsWith('/api/')) return next()
+  return serveStatic({ root: './' })(c, next)
+})
 
 const port = Number(process.env.PORT ?? 3000)
 console.log(`Listening on http://localhost:${port}`)
