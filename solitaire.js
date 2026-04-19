@@ -250,7 +250,7 @@ async function startGameSession() {
 function endGameSession(won) {
   if (!gameId) return;
   const payload = JSON.stringify({ won, moveCount });
-  navigator.sendBeacon(`/api/games/${gameId}`, new Blob([payload], { type: 'application/json' }));
+  navigator.sendBeacon(`/api/games/${gameId}/end`, new Blob([payload], { type: 'application/json' }));
 }
 
 startGameSession();

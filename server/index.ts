@@ -17,7 +17,7 @@ app.post('/api/games', async (c) => {
   return c.json({ id: game.id }, 201)
 })
 
-app.patch('/api/games/:id', async (c) => {
+app.post('/api/games/:id/end', async (c) => {
   const id = Number(c.req.param('id'))
   if (!Number.isInteger(id) || id <= 0) return c.json({ error: 'invalid id' }, 400)
 
