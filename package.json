@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "dev": "bun --env-file=.env.local run server/index.ts",
+    "start": "bun run server/index.ts",
+    "db:generate": "bun ./node_modules/drizzle-kit/bin.cjs generate",
+    "db:studio": "bun ./node_modules/drizzle-kit/bin.cjs studio"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.45.2",
+    "hono": "^4.12.14"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.10"
+  }
+}

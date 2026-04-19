@@ -234,6 +234,29 @@ let movedCardFromDeck = false;
 let validCardMove = false;
 let drag = null;
 
+let moveCount = 0;
+let gameId = null;
+
+async function startGameSession() {
+  try {
+    const res = await fetch('/api/games', { method: 'POST' });
+    if (res.ok) {
+      const data = await res.json();
+      gameId = data.id;
+    }
+  } catch (_) {}
+}
+
+function endGameSession(won) {
+  if (!gameId) return;
+  const payload = JSON.stringify({ won, moveCount });
+  navigator.sendBeacon(`/api/games/${gameId}`, new Blob([payload], { type: 'application/json' }));
+}
+
+startGameSession();
+const onUnload = () => endGameSession(false);
+window.addEventListener('beforeunload', onUnload);
+
 /**
  * Draw a card from the deck.
  * Take a card from the deck pile and put it in the flipped deck.
@@ -503,34 +526,37 @@ function findNextMovableCard() {
   return null;
 }
 
-async function autoCompleteGame() {  
+async function autoCompleteGame() {
   while (true) {
     const move = findNextMovableCard();
-    
+
     if (!move) {
       break;
     }
-    
+
     const { card, column } = move;
     const suitName = card.suitName;
 
     const foundationElement = suitFoundationMap[suitName];
-    
+
     // Update the completed cards array
     completedCards[suitName] = [...completedCards[suitName], card];
-    
+
     // Remove from column array
     const cardIndex = column.cards.findIndex(c => c.id === card.id);
     if (cardIndex > -1) {
       column.cards.splice(cardIndex, 1);
     }
-    
+
     // Animate the card
     moveCard(card.id, foundationElement);
-    
+
     // Small delay between cards for visual effect
     await new Promise(resolve => setTimeout(resolve, 100));
   }
+
+  window.removeEventListener('beforeunload', onUnload);
+  endGameSession(true);
 }
 
 function setupPointerDnD() {
@@ -654,6 +680,7 @@ function onPointerUp(e) {
     }
 
     if (validCardMove) {
+      moveCount++;
       // Move stack cards from ghost into the target column
       const movingEls = Array.from(drag.ghost.children);
       movingEls.forEach((el) => {
@@ -661,7 +688,7 @@ function onPointerUp(e) {
         el.style.top = '';
         el.style.left = '';
         target.appendChild(el);
-      });    
+      });
     }
   }
 
@@ -760,6 +787,7 @@ function autoMoveCard(cardEl) {
   const targetId = suitFoundationMap[cardSuitName];
   if (!targetId) return;
 
+  moveCount++;
   moveCard(clickedCard.id, targetId);
 
   completedCards[cardSuitName] = [...currentCompletedCardsForSuit, clickedCard];
